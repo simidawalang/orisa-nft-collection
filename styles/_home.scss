@@ -1,0 +1,71 @@
+main {
+  position: relative;
+}
+
+.main {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  padding: 0 30px;
+  @media #{$medium} {
+    padding: 0 100px;
+  }
+  @media #{ $large } {
+    flex-direction: row;
+  }
+}
+
+.intro-block {
+  text-align: center;
+  @media #{$large} {
+    text-align: left;
+     width: 50%;
+  }
+}
+
+.title {
+  color: $blue;
+  font-size: 40px;
+  margin-bottom: 30px;
+  @media #{$medium} {
+    font-size: 60px;
+  }
+}
+
+.description {
+  font-size: 20px;
+  margin-bottom: 30px;
+  @media #{$medium} {
+    font-size: 30px;
+  }
+}
+
+.highlighted-text {
+  color: $blue;
+}
+
+.cowry-image {
+  max-width: 300px;
+   max-height: 300px;
+  object-fit: contain;
+  @media #{ $medium} {
+    max-width: 500px;
+     max-height: 500px;
+  }
+}
+
+.current-account {
+  padding: 8px 10px;
+  border-radius: 0.25em;
+  border: 2px solid var(--clr-neon);
+  width: fit-content;
+  position: absolute;
+  display: inline-block;
+  top: 30px;
+  right: 50px;
+}

@@ -1,0 +1,49 @@
+$green: #4ed1aa;
+$dark-blue: #0f0c25;
+$blue: rgb(20, 243, 255);
+
+$medium: 'only screen and (min-width: 768px)';
+$large: 'only screen and (min-width: 992px)';
+
+
+:root {
+   --clr-neon: rgb(20, 243, 255);
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Source+Sans+Pro&display=swap");
+
+@import "./home";
+@import "../components/Button/button";
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Source Sans Pro", sans-serif;
+  color: #fff;
+  background: $dark-blue;
+
+}
+
+h1,
+h3,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
