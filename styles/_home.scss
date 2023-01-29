@@ -69,3 +69,12 @@ main {
   top: 30px;
   right: 50px;
 }
+
+.orisa-img {
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 10px;
+  @media #{ $medium} {
+    max-height: 600px;
+  }
+}

@@ -118,15 +118,10 @@ export default function Home() {
 
   const getTokenIdsMinted = async () => {
     try {
-      // Get the provider from web3Modal, which in our case is MetaMask
-      // No need for the Signer here, as we are only reading state from the blockchain
       const provider = await getSignerOrProvider();
-      // We connect to the Contract using a Provider, so we will only
-      // have read-only access to the Contract
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
-      // call the tokenIds from the contract
+
       const _tokenIds = await nftContract.tokenIds();
-      //_tokenIds is a `Big Number`. We need to convert the Big Number to a string
       setTokenIdsMinted(_tokenIds.toString());
     } catch (err) {
       console.error(err);
@@ -141,6 +136,7 @@ export default function Home() {
       setCurrentAccount(accounts[0]);
       setIsConnected(true);
       await getOwner();
+      await checkIfWhitelisted();
     } else {
       setCurrentAccount("");
       setIsConnected(false);
@@ -156,7 +152,7 @@ export default function Home() {
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
 
       const _isWhitelisted = await nftContract.whitelist.whitelistedAddresses(
-        accounts[0]
+        currentAccount
       );
       setIsWhitelisted(_isWhitelisted);
     } catch (e) {
@@ -228,7 +224,6 @@ export default function Home() {
 
   useEffect(() => {
     checkIfConnected();
-    checkIfWhitelisted();
   }, [currentAccount]);
 
   useEffect(() => {
@@ -249,7 +244,7 @@ export default function Home() {
         await getTokenIdsMinted();
       }, 5000);
     }
-  }, [isConnected]);
+  });
 
   useEffect(() => {
     window?.ethereum?.on("accountsChanged", handleAccountsChange);
@@ -278,6 +273,9 @@ export default function Home() {
           <div className="intro-block">
             <h1 className="title">Orisa</h1>
             <p className="description">For fans of Yoruba mythology</p>
+            <p className="description">
+              {tokenIdsMinted} / 30 have been minted so far
+            </p>
             {!isConnected && (
               <Button
                 className="btn-glow"
@@ -285,23 +283,36 @@ export default function Home() {
                 onClick={connectWallet}
               />
             )}
-            {isOwner && (
+            {isOwner && !presaleStarted && (
               <Button
                 className="btn-glow"
-                content="Start presale"
+                content={loading ? "Loading..." : "Start presale"}
                 onClick={startPresale}
               />
             )}
-            {isWhitelisted && <Button content="Presale Mint" />}
+            {!presaleEnded && presaleStarted && (
+              <Button
+                className="btn-glow"
+                content="Presale Mint"
+                onClick={presaleMint}
+              />
+            )}
+            {presaleEnded && (
+              <Button
+                className="btn-glow"
+                content="Mint"
+                onClick={publicMint}
+              />
+            )}
           </div>
           <div>
             <Image
-              className="Sango"
+              className="orisa-img"
               src="https://res.cloudinary.com/dtumqh3dd/image/upload/v1674788519/nft-dapp/sango_jh9hb4.jpg"
               alt="Sango"
               priority
-              width={600}
-              height={800}
+              width={400}
+              height={600}
             />
           </div>
         </div>
