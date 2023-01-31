@@ -5,6 +5,7 @@ import Web3Modal from "web3modal";
 import { providers, Contract, utils } from "ethers";
 import { Button } from "@/components";
 import { ABI, NFT_CONTRACT_ADDRESS } from "@/constants";
+import { getSigner, getProvider } from "@/helper_functions";
 
 export default function Home() {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -16,35 +17,9 @@ export default function Home() {
   const [presaleEnded, setPresaleEnded] = useState(false);
   const [tokenIdsMinted, setTokenIdsMinted] = useState("0");
 
-  const getSignerOrProvider = async (needSigner = false) => {
-    const web3Modal = new Web3Modal({
-      network: "goerli",
-      cacheProvider: true,
-      providerOptions: {},
-      disableInjectedProvider: false,
-    });
-
-    const provider = await web3Modal.connect();
-    const web3Provider = new providers.Web3Provider(provider);
-
-    // If user is not connected to the Goerli network, let them know and throw an error
-    const { chainId } = await web3Provider.getNetwork();
-    if (chainId !== 5) {
-      window.alert("Change the network to Goerli");
-      throw new Error("Change network to Goerli");
-      return;
-    }
-
-    if (needSigner) {
-      const signer = web3Provider.getSigner();
-      return signer;
-    }
-    return web3Provider;
-  };
-
   const startPresale = async () => {
     try {
-      const signer = await getSignerOrProvider(true);
+      const signer = await getSigner();
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, signer);
 
@@ -61,13 +36,13 @@ export default function Home() {
 
   const getOwner = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
 
       const onwer = await nftContract.owner();
 
-      const signer = await getSignerOrProvider(true);
+      const signer = await getSigner();
       const signerAddress = await signer?.getAddress();
 
       if (signerAddress.toLowerCase() === onwer.toLowerCase()) {
@@ -84,7 +59,7 @@ export default function Home() {
 
   const checkIfPresaleStarted = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
 
       const _presaleStarted = await nftContract.presaleStarted();
@@ -101,7 +76,7 @@ export default function Home() {
 
   const checkIfPresaleEnded = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
       const _presaleEnded = await nftContract.presaleEnded();
@@ -118,7 +93,7 @@ export default function Home() {
 
   const getTokenIdsMinted = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
 
       const _tokenIds = await nftContract.tokenIds();
@@ -146,7 +121,7 @@ export default function Home() {
 
   const checkIfWhitelisted = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
       const accounts = await provider.send("eth_requestAccounts", []);
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, provider);
@@ -162,7 +137,7 @@ export default function Home() {
 
   const presaleMint = async () => {
     try {
-      const signer = await getSignerOrProvider(true);
+      const signer = await getSigner();
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, signer);
       const tx = await nftContract.presaleMint({
@@ -181,7 +156,7 @@ export default function Home() {
 
   const publicMint = async () => {
     try {
-      const signer = await getSignerOrProvider(true);
+      const signer = await getSigner();
 
       const nftContract = new Contract(NFT_CONTRACT_ADDRESS, ABI, signer);
       const tx = await nftContract.mint({
@@ -200,7 +175,7 @@ export default function Home() {
 
   const checkIfConnected = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
       const accounts = await provider.send("eth_requestAccounts", []);
       setCurrentAccount(accounts[0]);
       setIsConnected(true);
@@ -213,7 +188,7 @@ export default function Home() {
 
   const connectWallet = async () => {
     try {
-      const provider = await getSignerOrProvider();
+      const provider = await getProvider();
       const accounts = await provider.listAccounts();
       setCurrentAccount(accounts[0]);
       setIsConnected(true);
